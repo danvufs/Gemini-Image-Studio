@@ -1,3 +1,4 @@
+```markdown
 # Studio Ảnh Phép Thuật Gemini
 
 Studio Ảnh Phép Thuật Gemini là một ứng dụng web đơn giản, được xây dựng bằng HTML, CSS và JavaScript thuần. Ứng dụng này cho phép người dùng tải lên hình ảnh và nhập chỉ dẫn sáng tạo để tạo ra hình ảnh mới thông qua API Gemini. Ngoài ra, ứng dụng còn hỗ trợ sử dụng nhiều ảnh tải lên (ví dụ: ảnh chính và ảnh tham chiếu) để thực hiện ghép ảnh hay chỉnh sửa theo yêu cầu.
@@ -23,42 +24,52 @@ Studio Ảnh Phép Thuật Gemini là một ứng dụng web đơn giản, đư�
    ```bash
    git clone https://github.com/danvufs/Gemini-Image-Studio.git
    cd Gemini-Image-Studio
+   ```
+
 2. **Mở file trong trình duyệt:**
 
-Ứng dụng không cần backend hay build tool phức tạp. Bạn chỉ cần mở file index.html trong trình duyệt hiện đại (Chrome, Firefox, Edge,...) để chạy ứng dụng.
+   Ứng dụng không cần backend hay build tool phức tạp. Bạn chỉ cần mở file `index.html` trong trình duyệt hiện đại (Chrome, Firefox, Edge,...) để chạy ứng dụng.
 
-Ví dụ:
+   Ví dụ:
+   
+   - Kích đúp file `index.html` hoặc  
+   - Sử dụng một server cục bộ (ví dụ: Live Server trong VSCode).
 
-Kích đúp file index.html hoặc
-Sử dụng một server cục bộ (ví dụ: Live Server trong VSCode).
 3. **Cấu hình API Key:**
 
-Trong file index.html, bạn cần cập nhật biến API_KEY với khóa API của bạn (được cấp bởi Google). Tìm dòng sau trong phần <script> và thay đổi giá trị:
+   Trong file `index.html`, bạn cần cập nhật biến `API_KEY` với khóa API của bạn (được cấp bởi Google). Tìm dòng sau trong phần `<script>` và thay đổi giá trị:
 
-js
-Copy
-const API_KEY = "YOUR_API_KEY_HERE";
+   ```js
+   const API_KEY = "YOUR_API_KEY_HERE";
+   ```
+
 ## Hướng dẫn sử dụng
-1 **Tải lên hình ảnh:**
-Nhấp vào khu vực "Nhấp hoặc kéo thả ảnh" để tải lên hình ảnh từ máy tính của bạn. Nếu tải lên nhiều ảnh, ảnh đầu tiên sẽ được sử dụng làm ảnh chính và ảnh thứ hai sẽ dùng làm ảnh tham chiếu.
 
-2. **Nhập chỉ dẫn:**
-Gõ vào ô nhập chỉ dẫn sáng tạo (hiệu quả nhất khi sử dụng tiếng Anh) để mô tả ý tưởng của bạn. Bạn có thể nhấp vào các nút gợi ý để lấy ý tưởng nhanh.
+1. **Tải lên hình ảnh:**  
+   Nhấp vào khu vực "Nhấp hoặc kéo thả ảnh" để tải lên hình ảnh từ máy tính của bạn. Nếu tải lên nhiều ảnh, ảnh đầu tiên sẽ được sử dụng làm ảnh chính và ảnh thứ hai sẽ dùng làm ảnh tham chiếu.
 
-3. **Chế độ tối ưu:**
-Bật chế độ "Sử dụng tối ưu ma thuật" nếu bạn muốn hệ thống tự động cải thiện chỉ dẫn để tăng tỉ lệ tạo ảnh thành công.
+2. **Nhập chỉ dẫn:**  
+   Gõ vào ô nhập chỉ dẫn sáng tạo (hiệu quả nhất khi sử dụng tiếng Anh) để mô tả ý tưởng của bạn. Bạn có thể nhấp vào các nút gợi ý để lấy ý tưởng nhanh.
 
-4. **Tạo ảnh:**
-Nhấp vào nút "✨ Tạo ảnh ma thuật" để gửi yêu cầu đến API. Ứng dụng sẽ hiển thị thông báo trạng thái và kết quả tạo ảnh sau vài giây.
+3. **Chế độ tối ưu:**  
+   Bật chế độ "Sử dụng tối ưu ma thuật" nếu bạn muốn hệ thống tự động cải thiện chỉ dẫn để tăng tỉ lệ tạo ảnh thành công.
+
+4. **Tạo ảnh:**  
+   Nhấp vào nút **"✨ Tạo ảnh ma thuật"** để gửi yêu cầu đến API. Ứng dụng sẽ hiển thị thông báo trạng thái và kết quả tạo ảnh sau vài giây.
 
 ## Cấu trúc dự án
-css
-Copy
+
+```
 .
 ├── index.html       # File chính chứa HTML, CSS và JavaScript của ứng dụng.
 └── README.md        # File hướng dẫn và mô tả dự án.
-Góp ý & Phản hồi
+```
+
+## Góp ý & Phản hồi
+
 Nếu bạn có bất kỳ góp ý, thắc mắc hoặc muốn đóng góp cải tiến, vui lòng tạo một issue hoặc pull request trên GitHub.
 
 ## License
-Dự án này được cấp phép theo MIT License.
+
+Dự án này được cấp phép theo [MIT License](LICENSE).
+```
