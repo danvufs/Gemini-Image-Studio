@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio Ảnh Phép Thuật Gemini</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <style>
+    :root {
+     
+      --primary-color: #4A90E2;
+      --primary-light: #82B1FF;
+      --primary-dark: #004BA0;
+      --accent-color: #50E3C2;
+      --text-color: #333333;
+      --bg-color: #f4f7fc;
+      --card-bg: #FFFFFF;
+      --shadow: 0 8px 20px rgba(74, 144, 226, 0.15);
+      --gradient: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      --border-radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      min-height: 100vh;
+      background-attachment: fixed;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    header {
+      background: var(--gradient);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+      border-bottom-left-radius: var(--border-radius);
+      border-bottom-right-radius: var(--border-radius);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      position: relative;
+      z-index: 2;
+    }
+    
+    header h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+    
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+    
+    header .header-icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+    
+    /* Container chính của trang */
+    .container {
+      max-width: 1000px;
+      margin: -20px auto 40px; /* Cách header hợp lý */
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 40px;
+      transition: var(--transition);
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(74, 144, 226, 0.2);
+    }
+    
+    @keyframes containerFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .container {
+      animation: containerFadeIn 1s ease-out;
+    }
+    
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--gradient);
+    }
+    
+ 
+    .upload-area {
+      border: 2px dashed rgba(74, 144, 226, 0.3);
+      border-radius: var(--border-radius);
+      padding: 25px;
+      text-align: center;
+      margin-bottom: 30px;
+      transition: var(--transition);
+      cursor: pointer;
+      background-color: rgba(74, 144, 226, 0.02);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .upload-area:hover {
+      border-color: var(--primary-color);
+      background-color: rgba(74, 144, 226, 0.05);
+      transform: translateY(-3px);
+    }
+    
+    .upload-area.dragover {
+      border-color: var(--primary-color);
+      background-color: rgba(74, 144, 226, 0.1);
+      transform: scale(1.01);
+    }
+    
+    .upload-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+      transition: var(--transition);
+    }
+    
+    .upload-area:hover .upload-icon {
+      transform: scale(1.1) rotate(5deg);
+      filter: drop-shadow(0 0 5px rgba(74, 144, 226, 0.6));
+    }
+    
+    .upload-text {
+      color: var(--text-color);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    
+    .small {
+      font-size: 0.85em;
+      color: #888;
+      font-weight: 400;
+    }
+    
+    .example-prompts {
+      margin: 15px 0 25px;
+    }
+    
+    .example-btn {
+      display: inline-block;
+      margin: 5px 5px 5px 0;
+      padding: 8px 16px;
+      background-color: rgba(74, 144, 226, 0.1);
+      color: var(--primary-color);
+      border: none;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 2px 5px rgba(74, 144, 226, 0.1);
+      background-image: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(80, 227, 194, 0.1));
+    }
+    
+    .example-btn:hover {
+      background-image: linear-gradient(135deg, rgba(74, 144, 226, 0.2), rgba(80, 227, 194, 0.2));
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 5px 10px rgba(74, 144, 226, 0.2);
+    }
+    
+    .uploaded-images-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 20px 0;
+      justify-content: center;
+      will-change: contents;
+    }
+    
+    .image-preview-wrapper {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+      transform: translateZ(0);
+      will-change: transform, opacity;
+    }
+    
+    .image-preview-wrapper:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .image-preview {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    
+    .image-preview-wrapper:hover .image-preview {
+      transform: scale(1.05);
+    }
+    
+    .image-delete-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #ff6666;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: var(--transition);
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .image-preview-wrapper:hover .image-delete-btn {
+      opacity: 1;
+    }
+    
+    .image-delete-btn:hover {
+      background-color: #ff6666;
+      color: white;
+      transform: rotate(90deg);
+    }
+    
+    .upload-hint {
+      text-align: center;
+      margin: 15px 0;
+      color: var(--primary-color);
+      font-style: normal;
+      display: none;
+      font-weight: 500;
+      background-color: rgba(74, 144, 226, 0.05);
+      padding: 8px 15px;
+      border-radius: 8px;
+    }
+    
+    .input-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+    
+    #promptInput {
+      width: 100%;
+      padding: 15px 18px;
+      border: 2px solid rgba(74, 144, 226, 0.2);
+      border-radius: 12px;
+      font-size: 16px;
+      transition: var(--transition);
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+    
+    #promptInput:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+      background-color: white;
+    }
+    
+    #promptInput::placeholder {
+      color: #aaa;
+    }
+    
+    .button-container {
+      display: flex;
+      justify-content: center;
+    }
+    
+    #generateButton {
+      padding: 14px 35px;
+      background: var(--gradient);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.4s ease;
+      box-shadow: 0 6px 15px rgba(74, 144, 226, 0.3);
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.5px;
+      z-index: 1;
+      transform-style: preserve-3d;
+    }
+    
+    #generateButton:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(74, 144, 226, 0.4);
+    }
+    
+    #generateButton:active {
+      transform: translateY(-1px) scale(1.02);
+    }
+    
+    .loading-animation {
+      display: none;
+      text-align: center;
+      margin: 30px 0;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(74, 144, 226, 0.2);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+      margin: 0 auto 15px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
+    
+    .result-container {
+      margin-top: 30px;
+      display: none;
+      will-change: transform;
+      transform: translateZ(0);
+    }
+    
+    .result-title {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+    
+    .result-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .result-image-wrapper {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+      aspect-ratio: 1/1;
+    }
+    
+    .result-image-wrapper:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(74, 144, 226, 0.2);
+    }
+    
+    .result-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    
+    .result-image-wrapper:hover .result-image {
+      transform: scale(1.05);
+    }
+    
+    .download-btn {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: var(--primary-color);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: var(--transition);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .result-image-wrapper:hover .download-btn {
+      opacity: 1;
+    }
+    
+    .download-btn:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: scale(1.1);
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 25px 15px;
+      }
+      
+      header h1 {
+        font-size: 2.2rem;
+      }
+      
+      .result-images {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+    }
+    
+    .error-message {
+      background-color: #ffeeee;
+      color: #ff5555;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid #ff5555;
+      display: none;
+    }
+    
+    .active {
+      transform: scale(0.95);
+    }
+    .shake {
+      animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    .selected {
+      animation: pulse 0.5s ease;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(80, 227, 194, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(80, 227, 194, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(80, 227, 194, 0); }
+    }
+    
+    /* Hiệu ứng gradient cho khung ảnh kết quả */
+    .image-container {
+      position: relative;
+    }
+    
+    .image-container::after {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border-radius: 20px;
+      background: linear-gradient(45deg, var(--primary-color), var(--accent-color), var(--primary-color));
+      background-size: 200% 200%;
+      z-index: -1;
+      filter: blur(20px);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      animation: gradientAnimation 6s ease infinite;
+    }
+    
+    .image-container:hover::after {
+      opacity: 0.5;
+    }
+    
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+    
+    footer.footer {
+      background: #333;
+      color: #ccc;
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9rem;
+      border-top: 1px solid #444;
+      margin-top: 40px;
+    }
+    
+    footer.footer p {
+      margin: 5px 0;
+    }
+    
+    footer.footer .social-icons {
+      margin-top: 10px;
+    }
+    
+    footer.footer .social-icons a {
+      color: #ccc;
+      margin: 0 8px;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: color 0.3s;
+    }
+    
+    footer.footer .social-icons a:hover {
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header hiện đại -->
+  <header>
+    <div class="header-icon">✨</div>
+    <h1>Studio Ảnh Phép Thuật Gemini</h1>
+    <p>Nơi nghệ thuật và ma thuật giao thoa</p>
+  </header>
+  
+  <div class="container">
+    <!-- Khu vực tải ảnh lên -->
+    <div class="upload-area" id="uploadArea">
+      <div class="upload-icon">🖼️</div>
+      <div class="upload-text">Nhấp hoặc kéo thả ảnh vào đây để tải lên</div>
+      <div class="upload-text small">(Hỗ trợ nhiều ảnh) Tải ảnh lên để biến đổi ma thuật</div>
+      <input type="file" id="imageInput" accept="image/*" multiple style="display: none;">
+    </div>
+    
+    <div class="safety-tips" style="margin-bottom: 20px; font-size: 0.85em; color: var(--primary-color); text-align: center; padding: 8px; background-color: rgba(74, 144, 226, 0.05); border-radius: 8px;">
+      💫 Mẹo nhỏ: Tránh sử dụng ảnh hoặc gợi ý có nội dung nhạy cảm để không bị hệ thống chặn ✨
+    </div>
+    
+    <div class="uploaded-images-container" id="uploadedImagesContainer"></div>
+    <div class="upload-hint" id="uploadHint">✨ Nhấp vào ảnh để chọn ảnh chính xử lý</div>
+    
+    <div class="input-group">
+      <input type="text" id="promptInput" placeholder="Nhập chỉ dẫn sáng tạo của bạn (Hiệu quả nhất với tiếng Anh)" />
+      <div class="prompt-optimization" style="margin-top: 10px; display: flex; align-items: center; justify-content: flex-end;">
+        <label for="useOptimization" style="font-size: 0.85em; display: flex; align-items: center; cursor: pointer;">
+          <input type="checkbox" id="useOptimization" checked style="margin-right: 5px;">
+          <span>Sử dụng tối ưu ma thuật ✨</span>
+          <span class="tooltip" style="position: relative; margin-left: 5px; cursor: help;">
+            ℹ️
+            <span class="tooltip-text" style="visibility: hidden; position: absolute; width: 250px; background-color: rgba(74, 144, 226, 0.9); color: white; text-align: center; padding: 8px; border-radius: 6px; z-index: 1; bottom: 125%; left: 50%; margin-left: -125px; opacity: 0; transition: opacity 0.3s; font-weight: normal;">
+              Tự động tối ưu gợi ý, giúp tăng tỉ lệ tạo ảnh thành công – thêm tiền tố và hậu tố thích hợp!
+            </span>
+          </span>
+        </label>
+      </div>
+      <div class="example-prompts">
+        <div class="small">Gợi ý:</div>
+        <button class="example-btn" data-prompt="A cute bichoonpoo in space">Cún trong không gian</button>
+        <button class="example-btn" data-prompt="Beautiful sunset over mountains">Hoàng hôn trên núi</button>
+        <button class="example-btn" data-prompt="Futuristic city with flying cars">Thành phố tương lai</button>
+        <button class="example-btn" data-prompt="Underwater world with colorful fish">Thế giới dưới nước</button>
+        <button class="example-btn" data-prompt="Fantasy forest with glowing plants">Khu rừng phép thuật</button>
+      </div>
+    </div>
+    
+    <div class="button-container">
+      <button id="generateButton">✨ Tạo ảnh ma thuật</button>
+    </div>
+    <div class="loader" id="loader"></div>
+    <div id="status"></div>
+    <div class="image-container" id="imageContainer" style="display: none;">
+      <img id="resultImage" src="" alt="Ảnh được tạo" />
+    </div>
+    <div class="ai-message-container" id="aiMessageContainer">
+      <div class="ai-message" id="aiMessage"></div>
+    </div>
+  </div>
+  
+  <!-- Footer hiện đại -->
+  <footer class="footer">
+    <p>© 2025 Studio Ảnh Phép Thuật Gemini</p>
+    <p>Thiết kế &amp; Phát triển bởi no name</p>
+    
+  </footer>
+  
+  <script>
+    // Khóa API
+    const API_KEY = "AIzaSyDWEgz0SlQAudvxuB9XUh_IZ2H-vf660G4";
+    
+    // Lấy các phần tử DOM cần thiết
+    const promptInput = document.getElementById("promptInput");
+    const generateButton = document.getElementById("generateButton");
+    const status = document.getElementById("status");
+    const resultImage = document.getElementById("resultImage");
+    const imageContainer = document.getElementById("imageContainer");
+    const loader = document.getElementById("loader");
+    const uploadArea = document.getElementById("uploadArea");
+    const imageInput = document.getElementById("imageInput");
+    const uploadedImagesContainer = document.getElementById("uploadedImagesContainer");
+    const uploadHint = document.getElementById("uploadHint");
+    const exampleButtons = document.querySelectorAll(".example-btn");
+    const useOptimization = document.getElementById("useOptimization");
+    const tooltip = document.querySelector(".tooltip");
+    const aiMessageContainer = document.getElementById("aiMessageContainer");
+    const aiMessage = document.getElementById("aiMessage");
+    
+    // Mảng lưu trữ ảnh đã tải lên
+    let uploadedImages = [];
+    let selectedImageIndex = -1;
+    
+    // Xử lý hiển thị tooltip tối ưu gợi ý
+    if (tooltip) {
+      tooltip.addEventListener("mouseenter", function() {
+        const tooltipText = this.querySelector(".tooltip-text");
+        requestAnimationFrame(() => {
+          tooltipText.style.visibility = "visible";
+          tooltipText.style.opacity = "1";
+        });
+      });
+      
+      tooltip.addEventListener("mouseleave", function() {
+        const tooltipText = this.querySelector(".tooltip-text");
+        requestAnimationFrame(() => {
+          tooltipText.style.visibility = "hidden";
+          tooltipText.style.opacity = "0";
+        });
+      });
+    }
+    
+    // Hiệu ứng load trang
+    document.addEventListener('DOMContentLoaded', () => {
+      requestAnimationFrame(() => {
+        document.querySelector('.container').style.opacity = '0';
+        requestAnimationFrame(() => {
+          document.querySelector('.container').style.opacity = '1';
+          document.querySelector('.container').style.transition = 'opacity 0.8s ease';
+        });
+      });
+    });
+    
+    // Xử lý sự kiện nhấp vào nút gợi ý ví dụ
+    document.querySelector('.example-prompts').addEventListener('click', (event) => {
+      const button = event.target.closest('.example-btn');
+      if (!button) return;
+      
+      promptInput.value = button.getAttribute("data-prompt");
+      promptInput.focus();
+      button.classList.add('active');
+      setTimeout(() => button.classList.remove('active'), 300);
+    });
+    
+    // Thêm sự kiện nhấn phím Enter để tạo ảnh
+    promptInput.addEventListener("keyup", (event) => {
+      if (event.key === "Enter") {
+        generateImage();
+      }
+    });
+    
+    // Ràng buộc sự kiện click cho nút tạo ảnh
+    generateButton.addEventListener("click", generateImage);
+    
+    // Khi ảnh được load xong, thêm hiệu ứng hiển thị
+    resultImage.addEventListener("load", () => {
+      resultImage.classList.add("show");
+    });
+    
+    // Xử lý kéo thả ảnh
+    uploadArea.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      uploadArea.classList.add("dragover");
+    });
+    
+    uploadArea.addEventListener("dragleave", () => {
+      uploadArea.classList.remove("dragover");
+    });
+    
+    uploadArea.addEventListener("drop", (event) => {
+      event.preventDefault();
+      uploadArea.classList.remove("dragover");
+      const files = event.dataTransfer.files;
+      handleMultipleImageUpload(files);
+    });
+    
+    // Mở hộp chọn file khi nhấp vào khu vực tải ảnh
+    uploadArea.addEventListener("click", () => {
+      imageInput.click();
+      uploadArea.classList.add('active');
+      setTimeout(() => uploadArea.classList.remove('active'), 300);
+    });
+    
+    imageInput.addEventListener("change", () => {
+      const files = imageInput.files;
+      handleMultipleImageUpload(files);
+    });
+    
+    // Hàm xử lý tải nhiều ảnh
+    function handleMultipleImageUpload(files) {
+      if (!files || files.length === 0) return;
+      Array.from(files).forEach(file => {
+        if (!file.type.match('image.*')) {
+          showStatus(`Tệp "${file.name}" không phải là ảnh hợp lệ`, "error");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imageData = {
+            id: Date.now() + Math.random().toString(36).substr(2, 9),
+            name: file.name,
+            src: e.target.result,
+            base64: e.target.result.split(',')[1]
+          };
+          uploadedImages.push(imageData);
+          if (uploadedImages.length === 1) {
+            selectedImageIndex = 0;
+          }
+          renderUploadedImages();
+          showStatus(`Ảnh "${file.name}" tải lên thành công!`, "success");
+          setTimeout(() => status.textContent = '', 2000);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    
+    // Hàm render danh sách ảnh đã tải lên
+    function renderUploadedImages() {
+      uploadedImagesContainer.innerHTML = '';
+      if (uploadedImages.length === 0) {
+        uploadHint.style.display = 'none';
+        return;
+      }
+      uploadHint.style.display = 'block';
+      const fragment = document.createDocumentFragment();
+      uploadedImages.forEach((image, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'image-preview-wrapper';
+        if (index === selectedImageIndex) {
+          wrapper.style.border = '3px solid var(--primary-color)';
+        }
+        const img = document.createElement('img');
+        img.className = 'image-preview';
+        img.src = image.src;
+        img.alt = image.name;
+        img.title = image.name;
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'image-delete-btn';
+        deleteBtn.innerHTML = '×';
+        deleteBtn.title = 'Xóa ảnh';
+        img.addEventListener('click', () => {
+          selectedImageIndex = index;
+          renderUploadedImages();
+          wrapper.classList.add('selected');
+          setTimeout(() => wrapper.classList.remove('selected'), 500);
+        });
+        deleteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          wrapper.style.transform = 'scale(0)';
+          wrapper.style.opacity = '0';
+          setTimeout(() => {
+            uploadedImages.splice(index, 1);
+            if (selectedImageIndex === index) {
+              selectedImageIndex = uploadedImages.length > 0 ? 0 : -1;
+            } else if (selectedImageIndex > index) {
+              selectedImageIndex--;
+            }
+            renderUploadedImages();
+          }, 300);
+        });
+        wrapper.appendChild(img);
+        wrapper.appendChild(deleteBtn);
+        fragment.appendChild(wrapper);
+      });
+      uploadedImagesContainer.appendChild(fragment);
+      requestAnimationFrame(() => {
+        const wrappers = uploadedImagesContainer.querySelectorAll('.image-preview-wrapper');
+        wrappers.forEach((wrapper, index) => {
+          wrapper.style.opacity = '0';
+          wrapper.style.transform = 'translateY(20px)';
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              wrapper.style.opacity = '1';
+              wrapper.style.transform = 'translateY(0)';
+              wrapper.style.transition = 'all 0.3s ease';
+            }, 20 * index);
+          });
+        });
+      });
+    }
+    
+    // Hàm tạo ảnh bằng API Gemini
+   async function generateImage() {
+  const prompt = promptInput.value.trim();
+  const totalImages = uploadedImages.length;
+  
+  // Kiểm tra nhập liệu
+  if (!prompt) {
+    showStatus("Vui lòng nhập gợi ý! ⚠️", "error");
+    promptInput.classList.add('shake');
+    setTimeout(() => promptInput.classList.remove('shake'), 500);
+    return;
+  }
+  
+  setLoading(true);
+  showStatus("✨ Đang sử dụng ma thuật để tạo ảnh...");
+  imageContainer.style.display = "none";
+  resultImage.classList.remove("show");
+  aiMessageContainer.classList.remove('show');
+  aiMessage.innerHTML = '';
+  
+  try {
+    generateButton.innerHTML = "Đang tạo ma thuật...";
+    
+    // Sử dụng tối ưu nếu bật
+    const finalPrompt = useOptimization.checked ? optimizePrompt(prompt) : prompt;
+    console.log("🔮 Gợi ý sử dụng:", finalPrompt);
+    
+    // Chuẩn bị yêu cầu gửi lên API
+    const requestBody = {
+      contents: [{
+        parts: [{ text: finalPrompt }]
+      }],
+      generationConfig: {
+        responseModalities: ["Text", "Image"]
+      }
+    };
+    
+    // Nếu có ảnh được tải lên
+    if (totalImages > 0) {
+      // Nếu có 2 ảnh trở lên, dùng ảnh đầu tiên làm chính, ảnh thứ 2 làm tham chiếu
+      if (totalImages >= 2) {
+        const primaryImage = uploadedImages[0];
+        const referenceImage = uploadedImages[1];
+        // Thêm dữ liệu của ảnh tham chiếu trước, sau đó là ảnh chính
+        requestBody.contents[0].parts.unshift(
+          {
+            inlineData: {
+              mimeType: "image/jpeg",
+              data: referenceImage.base64
+            }
+          },
+          {
+            inlineData: {
+              mimeType: "image/jpeg",
+              data: primaryImage.base64
+            }
+          }
+        );
+      } else {
+        // Nếu chỉ có 1 ảnh, sử dụng ảnh đó
+        const primaryImage = uploadedImages[0];
+        requestBody.contents[0].parts.unshift({
+          inlineData: {
+            mimeType: "image/jpeg",
+            data: primaryImage.base64
+          }
+        });
+      }
+    }
+    
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${API_KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestBody)
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || "Yêu cầu API thất bại");
+    }
+    
+    const data = await response.json();
+    
+    if (data.promptFeedback && data.promptFeedback.blockReason) {
+      const blockReason = data.promptFeedback.blockReason;
+      console.log("🛑 Lý do bị chặn:", blockReason);
+      throw new Error(handleBlockReason(blockReason));
+    }
+    
+    if (data.candidates && data.candidates[0] && data.candidates[0].finishReason) {
+      const finishReason = data.candidates[0].finishReason;
+      if (finishReason !== "STOP") {
+        throw new Error(handleFinishReason(finishReason));
+      }
+    }
+    
+    const candidate = data.candidates && data.candidates[0];
+    const content = candidate && candidate.content;
+    const parts = content && content.parts;
+    
+    if (!parts || parts.length === 0) {
+      throw new Error("API không trả về nội dung nào");
+    }
+    
+    // Lấy dữ liệu ảnh từ phần inlineData (giả sử chỉ có 1 ảnh kết quả)
+    const inlinePart = parts.find(part => part.inlineData);
+    const imageData = inlinePart && inlinePart.inlineData && inlinePart.inlineData.data;
+    
+    // Lấy dữ liệu văn bản từ AI
+    const textParts = parts.filter(part => part.text);
+    let aiTextResponse = "";
+    if (textParts && textParts.length > 0) {
+      aiTextResponse = textParts.map(part => part.text).join("");
+      const processedText = processAiText(aiTextResponse);
+      aiMessage.innerHTML = processedText;
+      setTimeout(() => { aiMessageContainer.classList.add('show'); }, 800);
+    } else {
+      aiMessageContainer.classList.remove('show');
+    }
+    
+    if (imageData) {
+      resultImage.src = `data:image/png;base64,${imageData}`;
+      imageContainer.style.display = "block";
+      setTimeout(() => {
+        imageContainer.scrollIntoView({ behavior: 'smooth' });
+        if (useOptimization.checked) {
+          showStatus("✨ Tạo ảnh thành công! Tối ưu ma thuật có hiệu quả ✨", "success");
+        } else {
+          showStatus("✨ Tạo ảnh thành công! Ma thuật đã hoàn thành ✨", "success");
+        }
+      }, 500);
+    } else {
+      showStatus("⚠️ Không thể tạo ảnh. Vui lòng thử gợi ý khác", "error");
+    }
+  } catch (error) {
+    console.error("Lỗi khi tạo ảnh:", error);
+    showStatus(`❌ Lỗi: ${error.message}`, "error");
+  } finally {
+    setLoading(false);
+    generateButton.innerHTML = "✨ Tạo ảnh ma thuật";
+  }
+}
+
+    
+    function showStatus(message, type = "") {
+      status.textContent = message;
+      status.className = "";
+      if (type) {
+        if (type === "error" && (message.includes("an toàn") || message.includes("chặn"))) {
+          status.classList.add("error-kawaii");
+          status.innerHTML = `<span style="font-size:1.2em;">⚠️</span> ${message} <span style="font-size:1.2em;">✨</span>`;
+          if (!useOptimization.checked) {
+            setTimeout(() => {
+              const suggestion = document.createElement('div');
+              suggestion.className = 'optimize-suggestion';
+              suggestion.innerHTML = `
+                <div style="margin-top: 15px; padding: 10px; background-color: rgba(80, 227, 194, 0.1); border-radius: 8px; font-size: 0.9em; text-align: center; color: #50E3C2; animation: pulse 2s infinite;">
+                  💫 Mẹo nhỏ: Hãy bật <span style="font-weight: bold; text-decoration: underline; cursor: pointer;" onclick="document.getElementById('useOptimization').checked = true;">Tối ưu ma thuật</span> để tăng khả năng thành công!
+                </div>
+              `;
+              status.appendChild(suggestion);
+            }, 500);
+          }
+        } else {
+          status.classList.add(type);
+        }
+        status.style.opacity = '0';
+        status.style.transform = 'translateY(-10px)';
+        setTimeout(() => {
+          status.style.opacity = '1';
+          status.style.transform = 'translateY(0)';
+          status.style.transition = 'all 0.3s ease';
+        }, 10);
+      }
+    }
+    
+    function setLoading(isLoading) {
+      generateButton.disabled = isLoading;
+      loader.style.display = isLoading ? "block" : "none";
+      promptInput.disabled = isLoading;
+    }
+    
+    function createStars() {
+      const stars = document.getElementById('magicStars');
+      const count = 20;
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        const size = Math.random() * 15 + 5;
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.top = `${y}%`;
+        star.style.left = `${x}%`;
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        stars.appendChild(star);
+      }
+    }
+    
+    createStars();
+    
+    function handleFinishReason(finishReason) {
+      switch(finishReason) {
+        case "IMAGE_SAFETY":
+          return "Nội dung ảnh bị hệ thống an toàn chặn. Vui lòng thử ảnh hoặc gợi ý khác.";
+        case "SAFETY":
+          return "Nội dung bị hệ thống an toàn chặn. Vui lòng chỉnh sửa gợi ý và thử lại.";
+        case "RECITATION":
+          return "AI không chắc chắn xử lý yêu cầu này. Vui lòng thử gợi ý rõ ràng hơn.";
+        case "MAX_TOKENS":
+          return "Nội dung tạo ra quá dài. Vui lòng đơn giản hóa yêu cầu.";
+        case "OTHER":
+          return "Yêu cầu bị hệ thống chặn. Vui lòng bật tối ưu ma thuật hoặc chỉnh sửa gợi ý.";
+        default:
+          return "Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.";
+      }
+    }
+    
+    function handleBlockReason(blockReason) {
+      switch(blockReason) {
+        case "SAFETY":
+          return "Nội dung gợi ý bị hệ thống an toàn chặn. Vui lòng chỉnh sửa và thử lại.";
+        case "OTHER":
+          return "Gợi ý bị hệ thống chặn. Vui lòng bật tối ưu ma thuật hoặc dùng gợi ý thân thiện hơn.";
+        default:
+          return `Gợi ý bị hệ thống chặn do lý do ${blockReason}. Vui lòng thử gợi ý khác.`;
+      }
+    }
+    
+    function optimizePrompt(originalPrompt) {
+      let cleanedPrompt = sanitizePrompt(originalPrompt);
+      if (shouldUseExtraSafety(cleanedPrompt)) {
+        return createSupersafePrompt(cleanedPrompt);
+      }
+      const prefixes = [
+        "Create a family-friendly digital art of ",
+        "Generate a wholesome image showing ",
+        "Illustrate a professional, clean artwork depicting ",
+        "Design a creative, positive visualization of ",
+        "Make a cheerful, artistic representation of ",
+        "Create an educational illustration of "
+      ];
+      
+      const suffixes = [
+        ", suitable for all ages",
+        ", bright and colorful style",
+        ", high quality digital art",
+        ", professional illustration",
+        ", happy vibes only",
+        ", uplifting aesthetic",
+        ", in a style appropriate for children"
+      ];
+      
+      const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+      const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+      
+      let enhancedPrompt = `${prefix}${cleanedPrompt}${suffix}`;
+      
+      const safetyHints = [
+        ". Create this as a G-rated image suitable for educational purposes.",
+        ". This must be appropriate content for classroom use.",
+        ". Make this appropriate for a children's book illustration.",
+        ". Ensure this follows all community guidelines.",
+        ". This is for a school project and must be appropriate.",
+        ". This image will be used in an educational context for young students.",
+        ". Create this in a positive, uplifting manner with no inappropriate elements."
+      ];
+      
+      const randomHint = safetyHints[Math.floor(Math.random() * safetyHints.length)];
+      enhancedPrompt += randomHint;
+      
+      const qualityTerms = [
+        " High resolution.", 
+        " Professional quality.", 
+        " Detailed illustration.", 
+        " Artistic style.", 
+        " Vibrant colors.",
+        " Child-friendly artwork.",
+        " Non-violent imagery.",
+        " Positive themes only."
+      ];
+      
+      const numTerms = Math.floor(Math.random() * 3) + 2;
+      const shuffledTerms = [...qualityTerms].sort(() => 0.5 - Math.random());
+      for (let i = 0; i < numTerms; i++) {
+        enhancedPrompt += shuffledTerms[i];
+      }
+      
+      return enhancedPrompt;
+    }
+    
+    function shouldUseExtraSafety(prompt) {
+      const highRiskTerms = ["nude", "naked", "sexy", "girl", "boy", "woman", "man", 
+        "adult", "body", "skin", "flesh", "intimate", "sensual", "bikini", 
+        "underwear", "revealing", "controversial", "realistic", "photo"];
+      let riskCount = 0;
+      highRiskTerms.forEach(term => {
+        if (prompt.toLowerCase().includes(term)) {
+          riskCount++;
+        }
+      });
+      return riskCount > 0;
+    }
+    
+    function createSupersafePrompt(prompt) {
+      let redesignedPrompt = "Create a cartoon-style, stylized illustration of " + prompt;
+      redesignedPrompt += " for a kindergarten classroom poster. Absolutely G-rated content.";
+      redesignedPrompt += " Colorful, whimsical, child-friendly art style with no realistic elements.";
+      redesignedPrompt += " This must be appropriate for very young children and follow strict educational guidelines.";
+      console.log("🔒 Đã bật chế độ an toàn siêu cấp");
+      return redesignedPrompt;
+    }
+    
+    function sanitizePrompt(prompt) {
+      const problematicTerms = [
+        "nude", "naked", "nsfw", "porn", "sexy", "sexual", "explicit", 
+        "violence", "violent", "blood", "gore", "weapon", "kill", "death",
+        "drug", "cocaine", "heroin", "meth", "illegal", "abuse"
+      ];
+      let cleanedPrompt = prompt;
+      let needsCleaning = false;
+      problematicTerms.forEach(term => {
+        if (cleanedPrompt.toLowerCase().includes(term)) {
+          const regex = new RegExp(term, 'gi');
+          cleanedPrompt = cleanedPrompt.replace(regex, 'appropriate');
+          needsCleaning = true;
+        }
+      });
+      if (needsCleaning) {
+        console.log("⚠️ Gợi ý đã được tối ưu để đảm bảo an toàn");
+      }
+      return cleanedPrompt;
+    }
+    
+    function processAiText(text) {
+      if (!text) return '';
+      let processedText = text.replace(/\n/g, '<br>');
+      const keywordsPattern = /(\b(?:thành công|hoàn thành|tạo|ma thuật|ảnh|tạo ra|hiệu ứng|phong cách|sáng tạo)\b)/g;
+      processedText = processedText.replace(
+        keywordsPattern, 
+        '<span style="color: var(--primary-color); font-weight: 600;">$1</span>'
+      );
+      if (!processedText.includes('?') && !processedText.includes('？')) {
+        processedText += ' 😊';
+      }
+      if (processedText.trim().endsWith('?') || processedText.trim().endsWith('？')) {
+        processedText = processedText.replace(/[?？](\s*)$/, '? 🤔$1');
+      }
+      return processedText;
+    }
+  </script>
+</body>
+</html>
