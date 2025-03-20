@@ -1,4 +1,4 @@
-```markdown
+
 # Studio Ảnh Phép Thuật Gemini
 
 Studio Ảnh Phép Thuật Gemini là một ứng dụng web đơn giản, được xây dựng bằng HTML, CSS và JavaScript thuần. Ứng dụng này cho phép người dùng tải lên hình ảnh và nhập chỉ dẫn sáng tạo để tạo ra hình ảnh mới thông qua API Gemini. Ngoài ra, ứng dụng còn hỗ trợ sử dụng nhiều ảnh tải lên (ví dụ: ảnh chính và ảnh tham chiếu) để thực hiện ghép ảnh hay chỉnh sửa theo yêu cầu.
@@ -24,7 +24,6 @@ Studio Ảnh Phép Thuật Gemini là một ứng dụng web đơn giản, đư�
    ```bash
    git clone https://github.com/danvufs/Gemini-Image-Studio.git
    cd Gemini-Image-Studio
-   ```
 
 2. **Mở file trong trình duyệt:**
 
